@@ -1,0 +1,190 @@
+openapi: 3.0.3
+info:
+  title: Microservice API to manage the TODOLIST
+  description: Microservice API to manage the TODOLIST
+  version: 1.0.0
+servers:
+  - url: http://localhost:8080/
+paths:
+  /persons:
+    post:
+      tags:
+        - Create new user
+      summary: Create a new user account
+      operationId: createUser
+      requestBody:
+        description: create new user
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreatePersonRequest'
+      responses:
+        '200':
+          description: Create user successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+
+  /tasks:
+    post:
+      tags:
+        - Create new task
+      summary: Create a new task
+      operationId: createTask
+      requestBody:
+        description: create new task
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/CreateTaskRequest'
+      responses:
+        '200':
+          description: Create task successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectCreationSuccessResponse'
+    delete:
+      tags:
+        - Delete a task
+      summary: Delete a task by ID
+      operationId: DeleteTask
+      parameters:
+        - in: query
+          name: id
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: Delete task successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectDeleteSuccessResponse'
+  /tasks/done:
+    patch:
+      tags:
+        - Update status of task
+      summary: Update status of task
+      operationId: updateStatus
+      requestBody:
+        description: provide id and status(done)
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateTaskStatusRequest'
+      responses:
+        '200':
+          description: update task status successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectUpdateSuccessResponse'
+  /tasks/content:
+    patch:
+      tags:
+        - Update content of task
+      summary: Update content of task
+      operationId: updateContent
+      requestBody:
+        description: provide id and content
+        content:
+          'application/json':
+            schema:
+              $ref: '#/components/schemas/UpdateTaskStatusRequest'
+      responses:
+        '200':
+          description: update task content successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectUpdateSuccessResponse'
+
+components:
+  schemas:
+    ApiError:
+      type: object
+      properties:
+        faults:
+          type: array
+          items:
+            $ref: "#/components/schemas/Fault"
+        responseCode:
+          type: integer
+    Fault:
+      type: object
+      properties:
+        internalMessage:
+          type: string
+        code:
+          type: integer
+        userMessage:
+          type: string
+    ObjectCreationSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        responseCode:
+          type: integer
+    ObjectUpdateSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        document:
+          type: string
+        responseCode:
+          type: integer
+    ObjectDeleteSuccessResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        document:
+          type: string
+        responseCode:
+          type: integer
+    CreatePersonRequest:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+        name:
+          type: string
+    CreateTaskRequest:
+      type: object
+      properties:
+        content:
+          type: string
+        userId:
+          type: string
+    UpdateTaskStatusRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        done:
+          type: boolean
+    UpdateTaskContentRequest:
+      type: object
+      properties:
+        id:
+          type: string
+        content:
+          type: string
+
+  examples:
+    InternalServerError:
+      value:
+        responseCode: 500
+        faults:
+          -:
+          userMessage: There're some error when processing this request. Please retry again or contact the site administrator for supporting
+          internalMessage: Internal server error
+          code: 1000
+          responseCode: 500
